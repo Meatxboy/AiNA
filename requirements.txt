@@ -1,5 +1,5 @@
 pip
+PyTorch
+TensorFlow
 streamlit
 transformers
-TensorFlow
-PyTorch
