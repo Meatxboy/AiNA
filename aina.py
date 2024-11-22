@@ -20,6 +20,16 @@ from pydantic import BaseModel
 
 model = pipeline(model="seara/rubert-tiny2-russian-sentiment")
 
+def Em_T_accuracy(inp):
+  res = model(inp)
+  acc = round(res[0]['score'] * 100, 2)
+  return acc
+
+def Em_T_label(inp):
+  res = model(inp)
+  lbl = res[0]['label']
+  return lbl
+
 def Em_T(to_api=False):
   st.header('Определить настроение по тексту')
 
