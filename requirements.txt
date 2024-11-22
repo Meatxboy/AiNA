@@ -6,3 +6,4 @@ transformers
 tf-keras
 fastapi
 uvicorn
+pydantic
