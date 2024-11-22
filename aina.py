@@ -14,12 +14,13 @@
 #pip install -q streamlit
 
 import streamlit as st
-
+from fastapi import FastAPI
 from transformers import pipeline
+from pydantic import BaseModel
 
 model = pipeline(model="seara/rubert-tiny2-russian-sentiment")
 
-def Em_T():
+def Em_T(to_api=False):
   st.header('Определить настроение по тексту')
 
   inp = st.text_input('Введите фразу, а я определю ваше настроение: ')
@@ -37,3 +38,47 @@ def Em_T():
 
 if __name__ == "__main__":
   Em_T()
+
+#Работа с API
+
+class Item(BaseModel):
+  text: str
+
+
+app = FastAPI()
+
+
+@app.get('/')
+def root():
+  return {'massage': 'Я умею читать настроение по тексту'}
+
+
+@app.get('/how/')
+def how():
+  
+  res = model('Hello World!')
+  acc = round(res[0]['score'] * 100, 2)
+
+  if res[0]['label'] == 'negative':
+    res = 'Негативное на' + str(acc) + '%'
+  elif res[0]['label'] == 'positive':
+    res = 'Позитивное на' + str(acc) + '%'
+  else:
+    res = 'Нейтральное на' + str(acc) + '%'
+
+  return 'Например, я считаю, что "Hello world!" ' + res
+
+
+@app.post('/predict/')
+def predict(item: Item):
+  res = model(item.text )[0]
+  acc = round(res[0]['score'] * 100, 2)
+
+  if res[0]['label'] == 'negative':
+    res = 'Негативный на' + str(acc) + '%'
+  elif res[0]['label'] == 'positive':
+    res = 'Позитивный на' + str(acc) + '%'
+  else:
+    res = 'Нейтральный на' + str(acc) + '%'
+
+  return 'Ваш текст ' + res
