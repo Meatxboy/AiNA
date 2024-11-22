@@ -4,3 +4,5 @@ TensorFlow
 streamlit
 transformers
 tf-keras
+fastapi
+uvicorn
